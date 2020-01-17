@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang ="en">
+    <head>
+        <meta charset ="UTF-8">
+        <meta name ="viewport" content = "width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content = "ie = edge">
+        <title>Google Map JavaScript API Demo</title>
+        <link rel ="stylesheet" type ="text/css" href ="style/style.css">
+		</head>
+
+    <body>
+        <h1>Google Map API Demo</h1>
+        <div id="map"></div>
+        <script>
+            var map;
+            var marker;
+            var infoWindowCityArea;
+            var infoWindowCentria;
+            var infoWindowPoint;
+            function initMap(){
+                // New map object
+                map = new google.maps.Map(document.getElementById('map'),{
+                    //map option porpertiesto 
+                    zoom:13,
+                    center:  {lat:63.838480,lng:23.130480},//coodination of Kokkola
+                    mapTypeId: 'terrain',
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_CENTER
+                    },
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        position: google.maps.ControlPosition.LEFT_CENTER
+                    },
+                    scaleControl: true,
+                    streetViewControl: true,
+                    streetViewControlOptions: {
+                        position: google.maps.ControlPosition.LEFT_TOP
+                    },
+                    fullscreenControl: true
+                });
+/*-------------Markers-----------------------------------------------------------------------------------------------------------------------*/
+                //Add marker
+                marker = new google.maps.Marker({
+                    position:{lat:63.833647,lng:23.160676}, //coodination of Centria ammattikoreakoulu
+                    map:map,
+                    icon: 'res/icon/school.png'
+                });
+                //Creating a pop-up window for the centria ammattikoreakoulu coodinate point
+                infoWindowCentria = new google.maps.InfoWindow({
+                    content: '<h1>Centria Ammattikoreakoulu</h1><br><p>ihmisten lukumärä: 20000</p><br><p>tulo: 600000€</p><br><p>auki-olo aja: 8:00 - 4:00</p>'
+                });
+                //pop-up listener
+                marker.addListener('click',function(){
+                    infoWindowCentria.open(map,marker);
+                });
+/*-------------Import data ------------------------------------------------------------------------------------------------------------------*/
+                var cityArea = new google.maps.Data({map:map});
+                var school = new google.maps.Data({map:map});
+                var hospital = new google.maps.Data({map:map});
+                var kindergarden = new google.maps.Data({map:map});
+                var park = new google.maps.Data({map:map});
+               //load data into maps
+                cityArea.loadGeoJson('data/KokkolaCityArea.json');
+                school.loadGeoJson('data/schoolDataPoints.json');
+                hospital.loadGeoJson('data/hospitalDataPoints.json');
+                kindergarden.loadGeoJson('data/kindergardenDataPoints.json');
+                park.loadGeoJson('data/parkDataPoints.json');
+/*--------------Style data layer-----------------------------------------------------------------------------------------------------------*/
+                //Setting the cityArea data layer style(the feature border and color)
+                cityArea.setStyle(function(feature){
+                    return({
+                        fillColor: feature.getProperty('fill'),
+                        strokeWeight: feature.getProperty('stroke-width')
+                    });
+                });
+                school.setStyle(function(feature){
+                    return({
+                            icon: 'res/icon/school.png'
+                    });
+                });
+                hospital.setStyle(function(feature){
+                    return({
+                            icon: 'res/icon/hospital.png'
+                    });
+                });
+                kindergarden.setStyle(function(feature){
+                    return({
+                            icon: 'res/icon/kindergarden.png'
+                    });
+                });
+                park.setStyle(function(feature){
+                    return({
+                            icon: 'res/icon/park.png'
+                    });
+                });
+/*--------------Create pop-up for every features data layer (city-area data layer)----------------------------------------------------------------*/
+                infoWindowCityArea = new google.maps.InfoWindow();
+                cityArea.addListener('click', function(event){  
+                    var cityArea = event.feature.getProperty('city-area');
+                    var id = event.feature.getProperty('ID');
+                    var population = event.feature.getProperty('population');
+                    var income = event.feature.getProperty('income');
+                    var outcome = event.feature.getProperty('outcome');
+                    var textContent =   '<h1>'+cityArea+'</h1>'+'<br>'+
+                                        'ID: '+id+'<br>'+
+                                        'Population: '+population+'<br>'+
+                                        'Income: '+income+'<br>'+
+                                        'Outcome: '+outcome+'<br>';
+                    infoWindowCityArea.setContent(textContent);
+                    infoWindowCityArea.setPosition(event.latLng);
+                    infoWindowCityArea.setOptions({pixelOffset: new google.maps.Size(0,0)});
+                    infoWindowCityArea.open(map);
+                });
+/*--------------Create pop-up for every data points (school data layer)----------------------------------------------------------------*/               
+                infoWindowPoint = new google.maps.InfoWindow();
+                school.addListener('click', function(event){
+                    var placeName = event.feature.getProperty('placeName');
+                    var id = event.feature.getProperty('ID');
+                    var population = event.feature.getProperty('population');
+                    var income = event.feature.getProperty('income');
+                    var textContent =   '<h1>'+placeName+'</h1>'+'<br>'+
+                                        'ID: '+id+'<br>'+
+                                        'Population: '+population+'<br>'+
+                                        'Income: '+income+'<br>';
+                    infoWindowPoint.setContent(textContent);
+                    infoWindowPoint.setPosition(event.latLng);
+                    infoWindowPoint.setOptions({pixelOffset: new google.maps.Size(0,-40)});
+                    infoWindowPoint.open(map);
+                });
+/*--------------Create pop-up for every data points (hospital data layer)----------------------------------------------------------------*/               
+                infoWindowPoint = new google.maps.InfoWindow();
+                hospital.addListener('click', function(event){
+                    var placeName = event.feature.getProperty('placeName');
+                    var id = event.feature.getProperty('ID');
+                    var population = event.feature.getProperty('population');
+                    var income = event.feature.getProperty('income');
+                    var textContent =   '<h1>'+placeName+'</h1>'+'<br>'+
+                                        'ID: '+id+'<br>'+
+                                        'Population: '+population+'<br>'+
+                                        'Income: '+income+'<br>';
+                    infoWindowPoint.setContent(textContent);
+                    infoWindowPoint.setPosition(event.latLng);
+                    infoWindowPoint.setOptions({pixelOffset: new google.maps.Size(0,-40)});
+                    infoWindowPoint.open(map);
+                });
+/*--------------Create pop-up for every data points (kindergarden data layer)----------------------------------------------------------------*/               
+                infoWindowPoint = new google.maps.InfoWindow();
+                kindergarden.addListener('click', function(event){
+                    var placeName = event.feature.getProperty('placeName');
+                    var id = event.feature.getProperty('ID');
+                    var population = event.feature.getProperty('population');
+                    var income = event.feature.getProperty('income');
+                    var textContent =   '<h1>'+placeName+'</h1>'+'<br>'+
+                                        'ID: '+id+'<br>'+
+                                        'Population: '+population+'<br>'+
+                                        'Income: '+income+'<br>';
+                    infoWindowPoint.setContent(textContent);
+                    infoWindowPoint.setPosition(event.latLng);
+                    infoWindowPoint.setOptions({pixelOffset: new google.maps.Size(0,-40)});
+                    infoWindowPoint.open(map);
+                });
+/*--------------Create pop-up for every data points (park data layer)----------------------------------------------------------------*/               
+                infoWindowPoint = new google.maps.InfoWindow();
+                park.addListener('click', function(event){
+                    var placeName = event.feature.getProperty('placeName');
+                    var id = event.feature.getProperty('ID');
+                    var population = event.feature.getProperty('population');
+                    var income = event.feature.getProperty('income');
+                    var textContent =   '<h1>'+placeName+'</h1>'+'<br>'+
+                                        'ID: '+id+'<br>'+
+                                        'Population: '+population+'<br>'+
+                                        'Income: '+income+'<br>';
+                    infoWindowPoint.setContent(textContent);
+                    infoWindowPoint.setPosition(event.latLng);
+                    infoWindowPoint.setOptions({pixelOffset: new google.maps.Size(0,-40)});
+                    infoWindowPoint.open(map);
+                });                                                            
+/*------------------------------------------------------------------------------------------------------------------------------------------*/                
+            }
+        </script>
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDlHzbmxAMIof1QUMP1a4hhHmDZV2sUUw&callback=initMap"async defer></script>
+    </body>
+
+    <footer>
+
+    </footer>
+</html>
+
+

@@ -1,0 +1,1 @@
+{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"marker-color":"#ff0000","marker-size":"medium","marker-symbol":"hospital","placeName":"Keski-Pohjanmaan Keskussairaala","population":6000,"income":80000,"ID":"hospital_1"},"geometry":{"type":"Point","coordinates":[23.10695171356201,63.845284553813045]}}]}
